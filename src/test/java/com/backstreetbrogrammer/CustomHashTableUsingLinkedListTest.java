@@ -85,19 +85,6 @@ public class CustomHashTableUsingLinkedListTest {
     }
 
     @Test
-    @DisplayName("Test remove() method from middle in collided index")
-    void testRemoveMethodFromMiddle() {
-        final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua", "Christy"};
-        for (String input : inputs) {
-            hashTable.put(input, input.length());
-            int value = hashTable.get(input);
-            assertEquals(input.length(), value);
-        }
-        hashTable.remove("Joshua");
-        assertNull(hashTable.get("Joshua"));
-    }
-
-    @Test
     @DisplayName("Test remove() method from tail in collided index")
     void testRemoveMethodFromTail() {
         final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua", "Christy"};
@@ -106,7 +93,7 @@ public class CustomHashTableUsingLinkedListTest {
             int value = hashTable.get(input);
             assertEquals(input.length(), value);
         }
-        hashTable.remove("Malcolm");
-        assertNull(hashTable.get("Malcolm"));
+        hashTable.remove("Bob");
+        assertNull(hashTable.get("Bob"));
     }
 }

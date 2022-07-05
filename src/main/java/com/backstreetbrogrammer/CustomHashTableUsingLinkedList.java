@@ -33,7 +33,19 @@ public class CustomHashTableUsingLinkedList<K, V> implements CustomHashTable<K, 
     public V get(K key) {
         Preconditions.checkArgument(key != null, "Key must not be null");
         LinkedListNode<K, V> node = getNodeForKey(key);
-        return node == null ? null : node.value;
+        V value = null;
+        if (node == null) {
+            // may be indexed using linear probing - will always be head
+            for (LinkedListNode<K, V> lln : arr) {
+                if (lln != null && lln.key == key) {
+                    value = lln.value;
+                    break;
+                }
+            }
+        } else {
+            value = node.value;
+        }
+        return value;
     }
 
     @Override
@@ -48,10 +60,26 @@ public class CustomHashTableUsingLinkedList<K, V> implements CustomHashTable<K, 
         node = new LinkedListNode<>(key, value);
         int index = getIndexForKey(key);
         if (arr.get(index) != null) { // collision
-            node.next = arr.get(index);
-            node.next.prev = node;
+            int n = getAvailableIndexAfterLinearProbing();
+            if (n == -1) { // no available index
+                node.next = arr.get(index);
+                node.next.prev = node;
+            } else {
+                index = n;
+            }
         }
         arr.set(index, node);
+    }
+
+    private int getAvailableIndexAfterLinearProbing() {
+        int idx = -1;
+        for (int i = 0; i < arr.size(); i++) {
+            if (arr.get(i) == null) {
+                idx = i;
+                break;
+            }
+        }
+        return idx;
     }
 
     @Override
@@ -84,7 +112,8 @@ public class CustomHashTableUsingLinkedList<K, V> implements CustomHashTable<K, 
     }
 
     private int getIndexForKey(K key) {
-        return Math.abs(key.hashCode() % arr.size());
+        // mask off the sign bit - turn 32-bit number into a 31-bit positive integer
+        return (key.hashCode() & 0x7fffffff) % arr.size();
     }
 
 }
