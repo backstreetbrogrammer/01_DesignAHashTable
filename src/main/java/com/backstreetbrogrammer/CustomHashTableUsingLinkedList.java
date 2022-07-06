@@ -51,6 +51,7 @@ public class CustomHashTableUsingLinkedList<K, V> implements CustomHashTable<K, 
     @Override
     public void put(K key, V value) {
         Preconditions.checkArgument(key != null, "Key must not be null");
+        Preconditions.checkArgument(value != null, "Value must not be null");
         LinkedListNode<K, V> node = getNodeForKey(key);
         if (node != null) { // already there
             node.value = value; // just update the value

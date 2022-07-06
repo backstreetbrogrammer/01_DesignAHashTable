@@ -38,6 +38,13 @@ public class CustomHashTableUsingLinkedListTest {
         assertEquals(exception.getMessage(), "Key must not be null");
     }
 
+    @Test
+    @DisplayName("When the Value is null, then throw exception for put()")
+    void whenValueIsNull_thenThrowExceptionForPutMethod() {
+        final Throwable exception = assertThrows(IllegalArgumentException.class, () -> hashTable.put("Rishi", null));
+        assertEquals(exception.getMessage(), "Value must not be null");
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"Rishi", "John", "Bob", "Malcolm", "Joshua"})
     @DisplayName("Test put() and get() methods with one input at a time")
