@@ -13,15 +13,15 @@ public class CustomHashTableUsingLinkedList<K, V> implements CustomHashTable<K, 
         public K key;
         public V value;
 
-        public LinkedListNode(K key, V value) {
+        public LinkedListNode(final K key, final V value) {
             this.key = key;
             this.value = value;
         }
     }
 
-    private ArrayList<LinkedListNode<K, V>> arr;
+    private final ArrayList<LinkedListNode<K, V>> arr;
 
-    public CustomHashTableUsingLinkedList(int capacity) {
+    public CustomHashTableUsingLinkedList(final int capacity) {
         arr = new ArrayList<>();
         arr.ensureCapacity(capacity);
         for (int i = 0; i < capacity; i++) {
@@ -30,13 +30,14 @@ public class CustomHashTableUsingLinkedList<K, V> implements CustomHashTable<K, 
     }
 
     @Override
-    public V get(K key) {
+    public V get(final K key) {
         Preconditions.checkArgument(key != null, "Key must not be null");
-        LinkedListNode<K, V> node = getNodeForKey(key);
+
+        final LinkedListNode<K, V> node = getNodeForKey(key);
         V value = null;
         if (node == null) {
             // may be indexed using linear probing - will always be head
-            for (LinkedListNode<K, V> lln : arr) {
+            for (final LinkedListNode<K, V> lln : arr) {
                 if (lln != null && lln.key == key) {
                     value = lln.value;
                     break;
@@ -49,9 +50,10 @@ public class CustomHashTableUsingLinkedList<K, V> implements CustomHashTable<K, 
     }
 
     @Override
-    public void put(K key, V value) {
+    public void put(final K key, final V value) {
         Preconditions.checkArgument(key != null, "Key must not be null");
         Preconditions.checkArgument(value != null, "Value must not be null");
+
         LinkedListNode<K, V> node = getNodeForKey(key);
         if (node != null) { // already there
             node.value = value; // just update the value
@@ -61,7 +63,7 @@ public class CustomHashTableUsingLinkedList<K, V> implements CustomHashTable<K, 
         node = new LinkedListNode<>(key, value);
         int index = getIndexForKey(key);
         if (arr.get(index) != null) { // collision
-            int n = getAvailableIndexAfterLinearProbing();
+            final int n = getAvailableIndexAfterLinearProbing();
             if (n == -1) { // no available index
                 node.next = arr.get(index);
                 node.next.prev = node;
@@ -70,6 +72,24 @@ public class CustomHashTableUsingLinkedList<K, V> implements CustomHashTable<K, 
             }
         }
         arr.set(index, node);
+    }
+
+    @Override
+    public void remove(final K key) {
+        Preconditions.checkArgument(key != null, "Key must not be null");
+
+        final LinkedListNode<K, V> node = getNodeForKey(key);
+        if (node.prev != null) {
+            node.prev.next = node.next;
+        } else {
+            // Removing head - update
+            final int hashKey = getIndexForKey(key);
+            arr.set(hashKey, node.next);
+        }
+
+        if (node.next != null) { // not a tail
+            node.next.prev = node.prev;
+        }
     }
 
     private int getAvailableIndexAfterLinearProbing() {
@@ -83,27 +103,10 @@ public class CustomHashTableUsingLinkedList<K, V> implements CustomHashTable<K, 
         return idx;
     }
 
-    @Override
-    public void remove(K key) {
-        Preconditions.checkArgument(key != null, "Key must not be null");
-        LinkedListNode<K, V> node = getNodeForKey(key);
-        if (node.prev != null) {
-            node.prev.next = node.next;
-        } else {
-            // Removing head - update
-            int hashKey = getIndexForKey(key);
-            arr.set(hashKey, node.next);
-        }
-
-        if (node.next != null) { // not a tail
-            node.next.prev = node.prev;
-        }
-    }
-
-    private LinkedListNode<K, V> getNodeForKey(K key) {
-        int index = getIndexForKey(key);
+    private LinkedListNode<K, V> getNodeForKey(final K key) {
+        final int index = getIndexForKey(key);
         LinkedListNode<K, V> current = arr.get(index);
-        while (current != null) {
+        while (current != null) { // collision
             if (current.key == key) {
                 return current;
             }
@@ -112,7 +115,7 @@ public class CustomHashTableUsingLinkedList<K, V> implements CustomHashTable<K, 
         return null;
     }
 
-    private int getIndexForKey(K key) {
+    private int getIndexForKey(final K key) {
         // mask off the sign bit - turn 32-bit number into a 31-bit positive integer
         return (key.hashCode() & 0x7fffffff) % arr.size();
     }
