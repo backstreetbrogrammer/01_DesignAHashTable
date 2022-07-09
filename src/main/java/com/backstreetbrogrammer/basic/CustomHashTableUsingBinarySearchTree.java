@@ -1,5 +1,6 @@
-package com.backstreetbrogrammer;
+package com.backstreetbrogrammer.basic;
 
+import com.backstreetbrogrammer.CustomHashTable;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;

@@ -1,5 +1,7 @@
-package com.backstreetbrogrammer;
+package com.backstreetbrogrammer.basic;
 
+import com.backstreetbrogrammer.CustomHashTable;
+import com.backstreetbrogrammer.basic.CustomHashTableUsingLinkedList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
